@@ -1,14 +1,9 @@
 # Deploying ELK stack on AWS EKS
 
+
+### Set up Elastic stack - Elasticsearch - FluentD - Kibana on AWS EKS cluster 
+
 [![Screenshot-2022-12-23-at-17-32-31.png](https://i.postimg.cc/nzrjYv6Z/Screenshot-2022-12-23-at-17-32-31.png)](https://postimg.cc/dkMVJTsS)
-
-<img src="https://techtiefen.de/podlove/image/68747470733a2f2f7465636874696566656e2e64652f77702d636f6e74656e742f75706c6f6164732f656c61737469632e706e67/500/500/0/elasticsearch" width="40px" height="40px" />
-
-<img src="https://pbs.twimg.com/profile_images/765159101542244353/Sgj58-zy_400x400.jpg" width="40px" height="40px" />
-
-<img src="https://img.stackshare.io/service/1722/Image_2019-05-20_at_4.53.31_PM.png" width="40px" height="40px" />
-
-
 
 <!-- MySQL => Databases => Tables => Rows/Columns
 Elasticsearch => Indices(Index) => Types => Documents with Field -->
@@ -23,4 +18,6 @@ Column -- Fields -->
 <!-- https://www.velotio.com/engineering-blog/elasticsearch-101-fundamentals-core-concepts#:~:text=Elasticsearch%20(ES)%20is%20a%20combination,capabilities%20with%20simple%20REST%20APIs. -->
 
 <!-- https://www.elastic.co/guide/en/elasticsearch/reference/current/_mapping_concepts_across_sql_and_elasticsearch.html -->
+
+
 
