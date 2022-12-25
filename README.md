@@ -181,5 +181,23 @@ ip-10-20-20-50.ec2.internal    Ready    <none>   17m   v1.22.15-eks-fb459a0
 ip-10-20-30-76.ec2.internal    Ready    <none>   17m   v1.22.15-eks-fb459a0
 
 ```
-.
+Now let's execute following command in each subdirectory for creating our first deployment for each application.
 
+```
+kubectl apply -f deployment.yaml 
+
+```
+Our deployments have been created and totally 7 PODS are running 
+
+```
+zhajili$ kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+java-app-7445d5847f-dd5bd   1/1     Running   0          9m4s
+java-app-7445d5847f-m7ppz   1/1     Running   0          9m4s
+java-app-7445d5847f-tbq2z   1/1     Running   0          9m4s
+node-app-96cd64687-28vgg    1/1     Running   0          13s
+node-app-96cd64687-86qht    1/1     Running   0          15s
+node-app-96cd64687-qgbh8    1/1     Running   0          15s
+node-app-96cd64687-szlv4    1/1     Running   0          13s
+```
+We can use also [Lens](https://k8slens.dev/) and check our further deployments ,Services ,ReplicaSets ,ConfigMaps ,Secrets and etc .Kubernetes Lens Extensions allows you to add new and custom features and visualizations to accelerate development workflows for all the technologies and services that integrate with Kubernetes. 
