@@ -79,3 +79,76 @@ f1b5933fe4b5: Pushed
 1.0: digest: sha256:461e9e52f7c771340827a7e5299fb90d63cb1218e2a8aad6da27efd87bb2d062 size: 1365
 
 ```
+
+#### Create AWS EKS cluster via Terraform
+
+We will use terraform to create EKS cluster ,please navigate to Directory Terraform Files and execute **terraform init** command .It will start to download modules for kubernetes as it is stated in **eks-cluster.tf** like below.
+
+```
+provider "kubernetes" {
+  config_path = "~/.kube/config"
+  host = data.aws_eks_cluster.ekl_eks_cluster.endpoint
+  token = data.aws_eks_cluster_auth.ekl_eks_cluster.token
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.ekl_eks_cluster.certificate_authority.0.data)
+}
+```
+Let's execute terraform plan see what resources will be created.
+
+```
+          + resource_type = "network-interface"
+          + tags          = {
+              + "Name"        = "worker-group-2"
+              + "application" = "EKS-STACK"
+              + "environment" = "development"
+            }
+        }
+      + tag_specifications {
+          + resource_type = "volume"
+          + tags          = {
+              + "Name"        = "worker-group-2"
+              + "application" = "EKS-STACK"
+              + "environment" = "development"
+            }
+        }
+    }
+
+  # module.eks.module.self_managed_node_group["two"].aws_security_group.this[0] will be created
+  + resource "aws_security_group" "this" {
+      + arn                    = (known after apply)
+      + description            = "Self managed node group security group"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = (known after apply)
+      + name_prefix            = "worker-group-2-node-group-"
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name"        = "worker-group-2-node-group"
+          + "application" = "EKS-STACK"
+          + "environment" = "development"
+        }
+      + tags_all               = {
+          + "Name"        = "worker-group-2-node-group"
+          + "application" = "EKS-STACK"
+          + "environment" = "development"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+Plan: 72 to add, 0 to change, 0 to destroy.
+
+```
+
+The output is long hence it is omitted ,as as summary we can see that 72 resources will be created. It will take around 15 minutes to complete to create our EKS cluster.Our kubernetes version is 1.22 and 3 Self-Managed worker nodes will be created.
+
+```
+Apply complete! Resources: 72 added, 0 changed, 0 destroyed.
+
+```
+[![Screenshot-2022-12-25-at-01-40-21.png](https://i.postimg.cc/4dPJnxck/Screenshot-2022-12-25-at-01-40-21.png)](https://postimg.cc/gXw9Td4N)
+
+[![Screenshot-2022-12-25-at-01-42-09.png](https://i.postimg.cc/Kvwm1V1z/Screenshot-2022-12-25-at-01-42-09.png)](https://postimg.cc/kBQ0ZTF3)
+Let's do some verification after finishing installation.
+
+
