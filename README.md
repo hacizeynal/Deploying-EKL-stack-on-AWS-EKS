@@ -151,4 +151,34 @@ Apply complete! Resources: 72 added, 0 changed, 0 destroyed.
 [![Screenshot-2022-12-25-at-01-42-09.png](https://i.postimg.cc/Kvwm1V1z/Screenshot-2022-12-25-at-01-42-09.png)](https://postimg.cc/kBQ0ZTF3)
 Let's do some verification after finishing installation.
 
+First of all ,we will need to update kubeconfig in order to manage our EKS cluster with following command.
+
+```
+aws eks update-kubeconfig --name EKL-stack-cluster
+
+```
+We can see that EKL-stack-cluster details has been added to ~/.kube/config.
+
+```
+zhajili$ cat ~/.kube/config | grep EKL
+  name: arn:aws:eks:us-east-1:866308211434:cluster/EKL-stack-cluster
+    cluster: arn:aws:eks:us-east-1:866308211434:cluster/EKL-stack-cluster
+    user: arn:aws:eks:us-east-1:866308211434:cluster/EKL-stack-cluster
+  name: arn:aws:eks:us-east-1:866308211434:cluster/EKL-stack-cluster
+current-context: arn:aws:eks:us-east-1:866308211434:cluster/EKL-stack-cluster
+- name: arn:aws:eks:us-east-1:866308211434:cluster/EKL-stack-cluster
+      - EKL-stack-cluster
+
+```
+And we can reach and manage to our worker nodes ,remember that all our worker nodes are actually EC2 instances which are managed by us due to configuring Self-Managed Worker Nodes.
+
+```
+zhajili$ kubectl get nodes
+NAME                           STATUS   ROLES    AGE   VERSION
+ip-10-20-10-88.ec2.internal    Ready    <none>   18m   v1.22.15-eks-fb459a0
+ip-10-20-20-242.ec2.internal   Ready    <none>   18m   v1.22.15-eks-fb459a0
+ip-10-20-20-50.ec2.internal    Ready    <none>   17m   v1.22.15-eks-fb459a0
+ip-10-20-30-76.ec2.internal    Ready    <none>   17m   v1.22.15-eks-fb459a0
+
+```
 
