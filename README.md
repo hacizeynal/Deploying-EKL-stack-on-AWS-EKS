@@ -234,6 +234,7 @@ NAME                                    READY   AGE
 statefulset.apps/elasticsearch-master   3/3     3m43s
 
 ```
+As we can see ElasticSearch Pods are stateful.
 Let's check all PODs in K8 cluster.
 
 ```
@@ -255,3 +256,57 @@ node-app-96cd64687-q5tkz    1/1     Running   0          58s
 node-app-96cd64687-r4pd6    1/1     Running   0          58s
 
 ```
+#### Deploy Kibana with Helm Chart 
+
+Make sure to open TCP port 5601 on Security Group for Worker Nodes and apply following command in elasticsearch namespace.
+
+```
+helm install kibana elastic/kibana -n elasticsearch
+
+zhajili$ kubectl get pods -n elasticsearch
+NAME                             READY   STATUS    RESTARTS   AGE
+elasticsearch-master-0           1/1     Running   0          24m
+elasticsearch-master-1           1/1     Running   0          24m
+elasticsearch-master-2           1/1     Running   0          24m
+java-app-7445d5847f-84wtm        1/1     Running   0          16m
+java-app-7445d5847f-bn744        1/1     Running   0          16m
+java-app-7445d5847f-fpxcr        1/1     Running   0          16m
+java-app-7445d5847f-h6mpw        1/1     Running   0          16m
+java-app-7445d5847f-rgwbt        1/1     Running   0          16m
+java-app-7445d5847f-tjjpq        1/1     Running   0          16m
+java-app-7445d5847f-z6glg        1/1     Running   0          16m
+kibana-kibana-769dfd4cdf-2xn7j   1/1     Running   0          5m4s
+
+```
+
+```
+zhajili$ kubectl get service --all-namespaces
+NAMESPACE       NAME                            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+default         kubernetes                      ClusterIP   172.20.0.1       <none>        443/TCP             116m
+elasticsearch   elasticsearch-master            ClusterIP   172.20.34.6      <none>        9200/TCP,9300/TCP   29m
+elasticsearch   elasticsearch-master-headless   ClusterIP   None             <none>        9200/TCP,9300/TCP   29m
+elasticsearch   kibana-kibana                   ClusterIP   172.20.185.150   <none>        5601/TCP            10m
+kube-system     kube-dns                        ClusterIP   172.20.0.10      <none>        53/UDP,53/TCP       116m
+```
+We can see that TYPE is **ClusterIP** ,so it means we will not able to reach it from outside ,we will install Ingress for Load Balancing later to achieve it ,for now we can use port forwarding via following command.
+
+```
+zhajili$ kubectl port-forward deployment/kibana-kibana 5601 -n elasticsearch 
+Forwarding from 127.0.0.1:5601 -> 5601
+Forwarding from [::1]:5601 -> 5601
+
+```
+
+[![Screenshot-2022-12-25-at-22-44-40.png](https://i.postimg.cc/ZngGhYkg/Screenshot-2022-12-25-at-22-44-40.png)](https://postimg.cc/y3mQmH8X)
+
+<!-- 1. Watch all containers come up.
+  $ kubectl get pods --namespace=elasticsearch -l release=kibana -w
+2. Retrieve the elastic user's password.
+  $ kubectl get secrets --namespace=elasticsearch elasticsearch-master-credentials -ojsonpath='{.data.password}' | base64 -d
+3. Retrieve the kibana service account token.
+  $ kubectl get secrets --namespace=elasticsearch kibana-kibana-es-token -ojsonpath='{.data.token}' | base64 -d
+zhajili$ kubectl get secrets --namespace=elasticsearch kibana-kibana-es-token -ojsonpath='{.data.token}' | base64 -d
+AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS1raWJhbmE6SDBCQ0JWOGtRN2FqNlBndjFwMVJ1UQzhajili$  -->
+
+
+
