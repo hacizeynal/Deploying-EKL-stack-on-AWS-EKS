@@ -201,3 +201,5 @@ node-app-96cd64687-qgbh8    1/1     Running   0          15s
 node-app-96cd64687-szlv4    1/1     Running   0          13s
 ```
 We can use also [Lens](https://k8slens.dev/) and check our further deployments ,Services ,ReplicaSets ,ConfigMaps ,Secrets and etc .Kubernetes Lens Extensions allows you to add new and custom features and visualizations to accelerate development workflows for all the technologies and services that integrate with Kubernetes. 
+
+[![Screenshot-2022-12-25-at-02-49-50.png](https://i.postimg.cc/Z5ckmMz0/Screenshot-2022-12-25-at-02-49-50.png)](https://postimg.cc/ZWCsFjRh)
