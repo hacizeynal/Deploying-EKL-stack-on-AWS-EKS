@@ -203,3 +203,55 @@ node-app-96cd64687-szlv4    1/1     Running   0          13s
 We can use also [Lens](https://k8slens.dev/) and check our further deployments ,Services ,ReplicaSets ,ConfigMaps ,Secrets and etc .Kubernetes Lens Extensions allows you to add new and custom features and visualizations to accelerate development workflows for all the technologies and services that integrate with Kubernetes. 
 
 [![Screenshot-2022-12-25-at-02-49-50.png](https://i.postimg.cc/Z5ckmMz0/Screenshot-2022-12-25-at-02-49-50.png)](https://postimg.cc/ZWCsFjRh)
+
+#### Deploy ElasticSearch with Helm Chart 
+
+Before installing Helm Chart ,please be remember to add inbound TCP port 9200 and port 9300 and outbound 0.0.0.0 to Security Group of Worker Nodes 
+
+Let's start deploy our ElasticSearch and see result.
+
+```
+    helm repo add elastic https://Helm.elastic.co
+    helm install elasticsearch elastic/elasticsearch -f value-elasticsearch.yaml
+```
+I have changed Java Heapsize to 750 mb ,since it was giving resource error and it seems that default value is not enough.
+I have also added PVC in order to have persistent Volume to keep all database in case any crash.
+
+After some time ,let's check pods in elasticsearch namespace.
+
+```
+zhajili$ kubectl get all -n elasticsearch
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/elasticsearch-master-0   1/1     Running   0          3m42s
+pod/elasticsearch-master-1   1/1     Running   0          3m42s
+pod/elasticsearch-master-2   1/1     Running   0          3m42s
+
+NAME                                    TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)             AGE
+service/elasticsearch-master            ClusterIP   172.20.34.6   <none>        9200/TCP,9300/TCP   3m42s
+service/elasticsearch-master-headless   ClusterIP   None          <none>        9200/TCP,9300/TCP   3m42s
+
+NAME                                    READY   AGE
+statefulset.apps/elasticsearch-master   3/3     3m43s
+
+```
+Let's check all PODs in K8 cluster.
+
+```
+zhajili$ kubectl get pods -n elasticsearch
+NAME                        READY   STATUS    RESTARTS   AGE
+elasticsearch-master-0      1/1     Running   0          8m53s
+elasticsearch-master-1      1/1     Running   0          8m53s
+elasticsearch-master-2      1/1     Running   0          8m53s
+java-app-7445d5847f-84wtm   1/1     Running   0          69s
+java-app-7445d5847f-bn744   1/1     Running   0          69s
+java-app-7445d5847f-fpxcr   1/1     Running   0          69s
+java-app-7445d5847f-h6mpw   1/1     Running   0          69s
+java-app-7445d5847f-rgwbt   1/1     Running   0          69s
+java-app-7445d5847f-tjjpq   1/1     Running   0          69s
+java-app-7445d5847f-z6glg   1/1     Running   0          69s
+node-app-96cd64687-8pwcs    1/1     Running   0          58s
+node-app-96cd64687-n8cll    1/1     Running   0          58s
+node-app-96cd64687-q5tkz    1/1     Running   0          58s
+node-app-96cd64687-r4pd6    1/1     Running   0          58s
+
+```
