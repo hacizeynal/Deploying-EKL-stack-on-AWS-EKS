@@ -43,13 +43,13 @@ module "eks" {
       name         = "worker-group-1"
       max_size     = 3
       desired_size = 2
-      instance_type = "t2.small"
+      instance_type = "t2.large"
     },
     two = {
       name         = "worker-group-2"
       max_size     = 3
       desired_size = 1
-      instance_type = "t2.medium"
+      instance_type = "t2.large"
     },
     three = {
       name         = "worker-group-3"
