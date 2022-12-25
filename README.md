@@ -181,4 +181,5 @@ ip-10-20-20-50.ec2.internal    Ready    <none>   17m   v1.22.15-eks-fb459a0
 ip-10-20-30-76.ec2.internal    Ready    <none>   17m   v1.22.15-eks-fb459a0
 
 ```
+.
 
