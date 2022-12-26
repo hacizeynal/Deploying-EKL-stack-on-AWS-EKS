@@ -19,16 +19,18 @@ data "aws_eks_cluster_auth" "ekl_eks_cluster" {
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "18.27.1"
-  cluster_name    = "EKL-stack-cluster"
+  cluster_name    = "ekl-stack-cluster"
   cluster_version = "1.22"
   subnet_ids = module.ekl_stack_vpc.private_subnets
   tags = {
     environment = "development"
     application = "EKS-STACK"
   }
+  
   vpc_id = module.ekl_stack_vpc.vpc_id
   create_aws_auth_configmap = true
   manage_aws_auth_configmap = true
+  
 
   self_managed_node_group_defaults = {
     instance_type = "t2.large"
@@ -43,18 +45,19 @@ module "eks" {
       name         = "worker-group-1"
       max_size     = 3
       desired_size = 2
-      instance_type = "t2.large"
+      instance_type = "t2.medium"
     },
     two = {
       name         = "worker-group-2"
       max_size     = 3
       desired_size = 1
-      instance_type = "t2.large"
+      instance_type = "t2.medium"
     },
     three = {
       name         = "worker-group-3"
       max_size     = 3
       desired_size = 1
+      instance_type = "t2.medium"
     }
   } 
 }

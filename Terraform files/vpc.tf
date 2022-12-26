@@ -21,14 +21,14 @@ module "ekl_stack_vpc" {
   enable_dns_hostnames =true
 
   tags = {
-    "kubernetes.io/cluster/ekl-eks-cluster" = "shared"
+    "kubernetes.io/cluster/ekl-stack-cluster" = "shared"
   }
   private_subnet_tags ={
-    "kubernetes.io/cluster/ekl-eks-cluster" = "shared"
+    "kubernetes.io/cluster/ekl-stack-cluster" = "shared"
     "kubernetes.io/role/internal-elb" = 1
   }
   public_subnet_tags = {
-    "kubernetes.io/cluster/ekl-eks-cluster" = "shared"
+    "kubernetes.io/cluster/ekl-stack-cluster" = "shared"
     "kubernetes.io/role/elb" = 1
   }
 }

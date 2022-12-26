@@ -56,10 +56,9 @@ https://github.com/microsoft/azure-pipelines-tasks/pull/13633#issue-495303841
 ##### install nginx-ingress controller
     helm repo add stable https://charts.helm.sh/stable 
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    helm install nginx-ingress ingress-nginx/ingress-nginx
+    helm install nginx-ingress ingress-nginx/ingress-nginx -n elk-stack
 
 [New Chart Repo](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx)
-
 ###### nginx-ingress issue
 In case you get an error when applying the kibana-ingress.yaml file, that mentions a validate webhook: `failed calling webhook "validate.nginx.ingress.kubernetes.io"`, then try the workaround shown here: https://stackoverflow.com/a/62044090    
 

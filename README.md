@@ -288,7 +288,7 @@ elasticsearch   elasticsearch-master-headless   ClusterIP   None             <no
 elasticsearch   kibana-kibana                   ClusterIP   172.20.185.150   <none>        5601/TCP            10m
 kube-system     kube-dns                        ClusterIP   172.20.0.10      <none>        53/UDP,53/TCP       116m
 ```
-We can see that TYPE is **ClusterIP** ,so it means we will not able to reach it from outside ,we will install Ingress for Load Balancing later to achieve it ,for now we can use port forwarding via following command.
+We can see that TYPE is **ClusterIP** ,so it means we will not able to reach it from outside ,we will install Ingress for Load Balancing later to achieve it ,for now we can use port forwarding via following command from localhost.
 
 ```
 zhajili$ kubectl port-forward deployment/kibana-kibana 5601 -n elasticsearch 
@@ -299,14 +299,45 @@ Forwarding from [::1]:5601 -> 5601
 
 [![Screenshot-2022-12-25-at-22-44-40.png](https://i.postimg.cc/ZngGhYkg/Screenshot-2022-12-25-at-22-44-40.png)](https://postimg.cc/y3mQmH8X)
 
-<!-- 1. Watch all containers come up.
-  $ kubectl get pods --namespace=elasticsearch -l release=kibana -w
-2. Retrieve the elastic user's password.
-  $ kubectl get secrets --namespace=elasticsearch elasticsearch-master-credentials -ojsonpath='{.data.password}' | base64 -d
-3. Retrieve the kibana service account token.
-  $ kubectl get secrets --namespace=elasticsearch kibana-kibana-es-token -ojsonpath='{.data.token}' | base64 -d
-zhajili$ kubectl get secrets --namespace=elasticsearch kibana-kibana-es-token -ojsonpath='{.data.token}' | base64 -d
-AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS1raWJhbmE6SDBCQ0JWOGtRN2FqNlBndjFwMVJ1UQzhajili$  -->
+#### Deploy Ingress Controller for Kibana Access
 
+Ingreess Controller will route external traffic to the Kibana server which is terminated with Cluster IP.Initial request will come to the Cloud Provider's load balancer.It will be logically in front of Ingress Controller.
 
+```
+helm install nginx-ingress ingress-nginx/ingress-nginx -n elk-stack
 
+```
+#### Deploy FluentD via HelmChart
+
+We will use again HelmChart to install Fluentd with following commands
+
+```
+   helm repo add bitnami https://charts.bitnami.com/bitnami
+   helm install fluentd bitnami/fluentd
+```
+
+```
+zhajili$ kubectl get pods -n ekl-stack
+fluentd-652nd                                             1/1     Running   4 (3m25s ago)   4m13s
+fluentd-69vqk                                             1/1     Running   4 (3m11s ago)   4m13s
+fluentd-6n6q8                                             1/1     Running   4 (3m13s ago)   4m13s
+fluentd-drtrg                                             1/1     Running   4 (3m17s ago)   4m13s
+
+```
+
+I will add update following piece of code to the ConfigMaps> fluentd-forwarder-cm of data section.
+
+```
+<source>
+  @type tail
+  path /var/log/containers/*.log
+  # exclude Fluentd logs
+  exclude_path /var/log/containers/*fluentd*.log
+  pos_file /opt/bitnami/fluentd/logs/buffers/fluentd-docker.pos
+  tag kubernetes.*
+  read_from_head true
+  format json
+</source>
+
+```
+Before change it was regex expression ,but we will need Json format.
