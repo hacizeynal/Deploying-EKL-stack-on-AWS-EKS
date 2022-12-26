@@ -1,34 +1,7 @@
-
-variable "vpc_cidr_block" {}
-variable "private_subnets" {}
-variable "public_subnets" {}
-
-
-data "aws_availability_zones" "azs" {}
-
-module "ekl_stack_vpc" {
-  source = "terraform-aws-modules/vpc/aws"
-
-  name = "ekl_stack_vpc"
-  cidr = var.vpc_cidr_block
-
-  azs = data.aws_availability_zones.azs.names
-  private_subnets = var.private_subnets
-  public_subnets  = var.public_subnets
-
-  enable_nat_gateway = true
-  single_nat_gateway = true
-  enable_dns_hostnames =true
+resource "aws_vpc" "eks_cluster_vpc" {
+  cidr_block = "10.0.0.0/16"
 
   tags = {
-    "kubernetes.io/cluster/ekl-stack-cluster" = "shared"
-  }
-  private_subnet_tags ={
-    "kubernetes.io/cluster/ekl-stack-cluster" = "shared"
-    "kubernetes.io/role/internal-elb" = 1
-  }
-  public_subnet_tags = {
-    "kubernetes.io/cluster/ekl-stack-cluster" = "shared"
-    "kubernetes.io/role/elb" = 1
+    Name = "EKS Cluster VPC"
   }
 }
