@@ -312,8 +312,8 @@ helm install nginx-ingress ingress-nginx/ingress-nginx -n elk-stack
 We will use again HelmChart to install Fluentd with following commands
 
 ```
-   helm repo add bitnami https://charts.bitnami.com/bitnami
-   helm install fluentd bitnami/fluentd
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install fluentd bitnami/fluentd -n ekl-stack
 ```
 
 ```
