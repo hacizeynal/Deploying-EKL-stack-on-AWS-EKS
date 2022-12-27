@@ -44,10 +44,10 @@ https://github.com/microsoft/azure-pipelines-tasks/pull/13633#issue-495303841
 
 ##### install elastic search chart 
     helm repo add elastic https://Helm.elastic.co
-    helm install elasticsearch elastic/elasticsearch -f values-linode.yaml
+    helm install elasticsearch elastic/elasticsearch -f value-elasticsearch.yaml -n elk-stack
 
 ##### install Kibana chart
-    helm install kibana elastic/kibana
+    helm install kibana elastic/kibana -n elk-stack
 
 ##### access Kibana locally
     kubectl port-forward deployment/kibana-kibana 5601
@@ -69,7 +69,7 @@ The following repo has been deprecated - https://stackoverflow.com/a/57970816
 
 ##### install Fluentd
     helm repo add bitnami https://charts.bitnami.com/bitnami
-    helm install fluentd bitnami/fluentd
+    helm install fluentd bitnami/fluentd -n elk-stack
 
 
 ### Other useful commands
@@ -89,3 +89,6 @@ The following repo has been deprecated - https://stackoverflow.com/a/57970816
 
 ##### install helm chart in a specific namespace (namespace must already exist)
     helm install elasticsearch elastic/elasticsearch -f values-linode.yaml -n elastic
+
+
+
