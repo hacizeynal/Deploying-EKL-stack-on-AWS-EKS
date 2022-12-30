@@ -235,8 +235,28 @@ statefulset.apps/elasticsearch-master   3/3     3m43s
 
 ```
 As we can see ElasticSearch Pods are stateful.
-Let's check all PODs in K8 cluster.
 
+Let's verify healthcheck via CURL
+
+curl -X GET "https://localhost:9200/_cluster/health?pretty"
+
+{
+  "cluster_name" : "elasticsearch",
+  "status" : "green",
+  "timed_out" : false,
+  "number_of_nodes" : 3,
+  "number_of_data_nodes" : 3,
+  "active_primary_shards" : 1,
+  "active_shards" : 2,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 0,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 100.0
+}
 ```
 zhajili$ kubectl get pods -n elasticsearch
 NAME                        READY   STATUS    RESTARTS   AGE
