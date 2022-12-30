@@ -239,7 +239,7 @@ As we can see ElasticSearch Pods are stateful.
 Let's verify healthcheck via CURL
 
 curl -X GET "https://localhost:9200/_cluster/health?pretty"
-
+```
 {
   "cluster_name" : "elasticsearch",
   "status" : "green",
@@ -257,6 +257,8 @@ curl -X GET "https://localhost:9200/_cluster/health?pretty"
   "task_max_waiting_in_queue_millis" : 0,
   "active_shards_percent_as_number" : 100.0
 }
+```
+
 ```
 zhajili$ kubectl get pods -n elasticsearch
 NAME                        READY   STATUS    RESTARTS   AGE
