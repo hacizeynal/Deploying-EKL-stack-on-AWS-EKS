@@ -5,7 +5,7 @@ nodeGroup: "master"
 # The service that non master groups will try to connect to when joining the cluster
 # This should be set to clusterName + "-" + nodeGroup for your master group
 masterService: ""
-
+esJavaOpts: "-Xmx750m -Xms750m"
 # Elasticsearch roles that will be applied to this nodeGroup
 # These will be set as environment variables. E.g. node.roles=master
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles
@@ -26,6 +26,7 @@ minimumMasterNodes: 2
 
 esMajorVersion: ""
 
+
 # Allows you to add any config files in /usr/share/elasticsearch/config/
 # such as elasticsearch.yml and log4j2.properties
 esConfig: {}
@@ -35,7 +36,7 @@ esConfig: {}
 #  log4j2.properties: |
 #    key = value
 
-createCert: true
+createCert: true ## << changed to false from originial
 
 esJvmOptions: {}
 #  processors.options: |
@@ -85,8 +86,6 @@ podAnnotations: {}
 # additionals labels
 labels: {}
 
-esJavaOpts: "-Xmx750m -Xms750m"
-
 resources:
   requests:
     cpu: "1000m"
@@ -104,12 +103,6 @@ initResources: {}
 #   memory: "128Mi"
 
 networkHost: "0.0.0.0"
-
-# volumeClaimTemplate:
-#   accessModes: ["ReadWriteOnce"]
-#   resources:
-#     requests:
-#       storage: 30Gi
 
 # Request smaller persistent volumes.
 volumeClaimTemplate:
@@ -241,7 +234,7 @@ sysctlVmMaxMapCount: 262144
 
 readinessProbe:
   failureThreshold: 3
-  initialDelaySeconds: 10
+  initialDelaySeconds: 200
   periodSeconds: 10
   successThreshold: 3
   timeoutSeconds: 5
