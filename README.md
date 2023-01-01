@@ -236,9 +236,10 @@ statefulset.apps/elasticsearch-master   3/3     3m43s
 ```
 As we can see ElasticSearch Pods are stateful.
 
-Let's verify healthcheck via CURL
+Let's verify healthcheck via CURL ,please make sure use username and password since we created our Elasticsearch like that.
 
-curl -X GET "https://localhost:9200/_cluster/health?pretty"
+curl -k -XGET -u elastic:Krakow123 'https://localhost:9200'
+
 ```
 {
   "cluster_name" : "elasticsearch",
@@ -349,17 +350,80 @@ fluentd-drtrg                                             1/1     Running   4 (3
 
 I will add update following piece of code to the ConfigMaps> fluentd-forwarder-cm of data section.
 
-```
-<source>
-  @type tail
-  path /var/log/containers/*.log
-  # exclude Fluentd logs
-  exclude_path /var/log/containers/*fluentd*.log
-  pos_file /opt/bitnami/fluentd/logs/buffers/fluentd-docker.pos
-  tag kubernetes.*
-  read_from_head true
-  format json
-</source>
+Below code shows from which sources and from which pattern logs will be collected.
 
 ```
-Before change it was regex expression ,but we will need Json format.
+<source>
+      @type tail
+      path /var/log/containers/*-app*.log
+      pos_file /opt/bitnami/fluentd/logs/buffers/fluentd-docker.pos
+      tag kubernetes.*
+      read_from_head true
+      format json
+      <parse>
+        @type multi_format
+        <pattern>
+          format json
+          time_key time
+          time_type string
+          time_format "%Y-%m-%dT%H:%M:%S.%NZ"
+          keep_time_key false
+        </pattern>
+        <pattern>
+          format regexp
+          expression /^(?<time>.+) (?<stream>stdout|stderr)( (?<logtag>.))? (?<log>.*)$/
+          time_format '%Y-%m-%dT%H:%M:%S.%N%:z'
+          keep_time_key false
+        </pattern>
+      </parse>
+
+```
+And in following below code ,we will see where our logs will be sent.
+
+```
+<match kubernetes.var.log.containers.**java-app**.log>
+      @type elasticsearch
+      include_tag_key true
+      host "elasticsearch-master.monitoring.svc.cluster.local"
+      port "9200"
+      user elastic 
+      password Krakow123
+      scheme https
+      ssl_verify false
+      index_name "java-app-logs"
+      <buffer>
+        @type file
+        path /opt/bitnami/fluentd/logs/buffers/java-logs.buffer
+        flush_thread_count 2
+        flush_interval 5s
+      </buffer>
+    </match>
+
+    <match kubernetes.var.log.containers.**node-app**.log>
+      @type elasticsearch
+      include_tag_key true
+      host "elasticsearch-master.monitoring.svc.cluster.local"
+      port "9200"
+      user elastic 
+      password Krakow123
+      scheme https
+      ssl_verify false
+      index_name "node-app-logs"
+      <buffer>
+        @type file
+        path /opt/bitnami/fluentd/logs/buffers/node-logs.buffer
+        flush_thread_count 2
+        flush_interval 5s
+      </buffer>
+    </match>
+```
+In successful scenario ,we should see 2 different Indices created on Kibana dashboard.
+
+[![Screenshot-2023-01-01-at-22-24-41.png](https://i.postimg.cc/dVMJK7My/Screenshot-2023-01-01-at-22-24-41.png)](https://postimg.cc/bsR7xwwy)
+
+And in Discover section ,we can see already our logs from deployed containers 
+
+[![Screenshot-2023-01-01-at-23-53-47.png](https://i.postimg.cc/qBDnV6sw/Screenshot-2023-01-01-at-23-53-47.png)](https://postimg.cc/jCNCy5kn)
+
+[![Screenshot-2023-01-01-at-23-52-17.png](https://i.postimg.cc/KcffKYn3/Screenshot-2023-01-01-at-23-52-17.png)](https://postimg.cc/fk3mpDqM)
+
